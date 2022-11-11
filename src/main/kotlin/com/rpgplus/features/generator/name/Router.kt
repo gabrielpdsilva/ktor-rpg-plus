@@ -30,7 +30,7 @@ fun Route.generateName() {
             println("Error: $exception")
             call.respond(
                 HttpStatusCode.InternalServerError,
-                exception
+                "${exception.message}"
             )
         }
 
