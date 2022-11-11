@@ -1,0 +1,11 @@
+https://dev.to/kotlinautas/criando-uma-api-com-ktor-8le
+
+https://levelup.gitconnected.com/how-to-access-database-with-kotlin-6b86f6680cd7
+
+https://stackoverflow.com/questions/69436818/how-to-call-functions-procedures-from-oracle-database-using-kotlin-exposed
+
+https://www.youtube.com/watch?v=wANrbLsGzL4
+
+https://stackoverflow.com/questions/65142397/kotlin-exposed-select-single-record
+
+https://blog.devgenius.io/ktor-rest-apis-integrating-sql-database-using-ktorm-7adacdf41003
