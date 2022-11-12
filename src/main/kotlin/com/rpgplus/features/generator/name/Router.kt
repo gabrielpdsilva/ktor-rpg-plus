@@ -8,21 +8,23 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Route.generateFullName() {
-    get("/generator/full-name") {
+    get("/generator/full-name/{categoryId}") {
+        val categoryId = call.parameters["categoryId"]
         try {
-            var generatedName = ""
+            var generatedName: String? = ""
             transaction {
                 val conn = TransactionManager.current().connection
-                val query = "SELECT dbo.fn_get_full_random_name_by_category(1) AS full_name";
+                val query = "SELECT dbo.fn_get_full_random_name_by_category($categoryId) AS full_name";
                 val statement = conn.prepareStatement(query, false)
                 val resultSet = statement.executeQuery()
                 if (resultSet.next()) {
                     generatedName = resultSet.getString("full_name")
                 }
             }
+            val message = generatedName ?: "No names registered for the specified category."
             call.respond(
                 HttpStatusCode.OK,
-                generatedName
+                message
             )
         } catch (exception: Exception) {
             println("Error: $exception.message")
@@ -36,21 +38,23 @@ fun Route.generateFullName() {
 }
 
 fun Route.generateName() {
-    get("/generator/name") {
+    get("/generator/name/{categoryId}") {
+        val categoryId = call.parameters["categoryId"]
         try {
-            var generatedName = ""
+            var generatedName: String? = ""
             transaction {
                 val conn = TransactionManager.current().connection
-                val query = "SELECT dbo.fn_get_random_name_by_category(1) AS name";
+                val query = "SELECT dbo.fn_get_random_name_by_category($categoryId) AS name";
                 val statement = conn.prepareStatement(query, false)
                 val resultSet = statement.executeQuery()
                 if (resultSet.next()) {
                     generatedName = resultSet.getString("name")
                 }
             }
+            val message = generatedName ?: "No names registered for the specified category."
             call.respond(
                 HttpStatusCode.OK,
-                generatedName
+                message
             )
         } catch (exception: Exception) {
             println("Error: $exception.message")
