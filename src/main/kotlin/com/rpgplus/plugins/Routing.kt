@@ -2,6 +2,7 @@ package com.rpgplus.plugins
 
 import com.rpgplus.features.category.getCategories
 import com.rpgplus.features.category.getCategory
+import com.rpgplus.features.generator.name.generateFullName
 import com.rpgplus.features.generator.name.generateName
 import io.ktor.server.routing.*
 import io.ktor.server.http.content.*
@@ -17,8 +18,16 @@ fun Application.configureRouting() {
        }
     }
 
+    fun nameGeneratorRoutes() {
+        routing {
+            generateFullName()
+            generateName()
+        }
+    }
+
     routing {
-        generateName()
+
+        nameGeneratorRoutes()
         categoryRoutes()
 
         get("/") {

@@ -48,36 +48,6 @@ AS
 SELECT NEWID() AS [new_id]
 GO
 
--- === Functions ===
-CREATE FUNCTION fn_get_random_name_by_category(@category_id INT)
-RETURNS VARCHAR(255)
-AS BEGIN
-
-	DECLARE @first_name VARCHAR(255)
-	DECLARE @last_name VARCHAR(255)
-	DECLARE @complete_name VARCHAR(255)
-
-	SET @first_name = (
-		SELECT TOP 1 n.name
-		FROM name n
-		WHERE n.category_id = @category_id AND n.type = 'First Name'
-		ORDER BY (SELECT [new_id] FROM get_new_id)
-	)
-
-	SET @last_name = (
-		SELECT TOP 1 n.name
-		FROM name n
-		WHERE n.category_id = @category_id AND n.type = 'Last Name'
-		ORDER BY (SELECT [new_id] FROM get_new_id)
-	)
-
-	SET @complete_name = @first_name + ' ' + @last_name
-	RETURN @complete_name
-END
-GO
-
-SELECT dbo.fn_get_random_name_by_category(1) AS random_name
-
 -- === Exposed table inserts ===
 INSERT INTO categories(name) VALUES
 ('medieval'),
@@ -97,5 +67,81 @@ INSERT INTO names(name, type_id, category_id) VALUES
 ('Mary', 1, 1),
 ('Turin', 1, 1),
 ('The Great', 3, 1),
-('Lion Heart', 3, 1)
+('Lion Heart', 3, 1),
+('Matthews', 2, 1),
+('Edgar', 2, 1)
+GO
+
+-- == New functions ==
+
+--DROP FUNCTION fn_get_random_name_by_category
+CREATE FUNCTION fn_get_random_name_by_category(@category_id INT)
+RETURNS VARCHAR(255)
+AS BEGIN
+
+	DECLARE @first_name VARCHAR(255)
+	DECLARE @last_name VARCHAR(255)
+	DECLARE @complete_name VARCHAR(255)
+
+	SET @first_name = (
+		SELECT TOP 1 n.name
+		FROM names n
+		WHERE n.category_id = @category_id AND n.type_id = 1
+		ORDER BY (SELECT [new_id] FROM get_new_id)
+	)
+
+	SET @last_name = (
+		SELECT TOP 1 n.name
+		FROM names n
+		WHERE n.category_id = @category_id AND n.type_id = 3
+		ORDER BY (SELECT [new_id] FROM get_new_id)
+	)
+
+	SET @complete_name = @first_name + ' ' + @last_name
+	RETURN @complete_name
+END
+GO
+
+SELECT dbo.fn_get_random_name_by_category(1) AS random_name
+
+--DROP FUNCTION fn_get_full_random_name_by_category
+CREATE FUNCTION fn_get_full_random_name_by_category(@category_id INT)
+RETURNS VARCHAR(255)
+AS BEGIN
+
+	DECLARE @first_name VARCHAR(255)
+	DECLARE @middle_name VARCHAR(255)
+	DECLARE @last_name VARCHAR(255)
+	DECLARE @complete_name VARCHAR(255)
+
+	SET @first_name = (
+		SELECT TOP 1 n.name
+		FROM names n
+		WHERE n.category_id = @category_id AND n.type_id = 1
+		ORDER BY (SELECT [new_id] FROM get_new_id)
+	)
+
+	SET @middle_name = (
+		SELECT TOP 1 n.name
+		FROM names n
+		WHERE n.category_id = @category_id AND n.type_id = 2
+		ORDER BY (SELECT [new_id] FROM get_new_id)
+	)
+
+	SET @last_name = (
+		SELECT TOP 1 n.name
+		FROM names n
+		WHERE n.category_id = @category_id AND n.type_id = 3
+		ORDER BY (SELECT [new_id] FROM get_new_id)
+	)
+
+	IF (@middle_name IS NULL)
+	BEGIN
+		SET @complete_name = @first_name + ' ' + @last_name
+		RETURN @complete_name
+	END
+
+	SET @complete_name = @first_name + ' ' + @middle_name + ' ' + @last_name
+	RETURN @complete_name
+END
 GO
