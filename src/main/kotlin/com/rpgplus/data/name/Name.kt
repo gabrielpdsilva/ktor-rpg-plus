@@ -4,7 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Name(
-    val id: Int,
     val name: String,
-    val categoryId: Int
+    val categoryId: Int,
+    val typeId: Int,
+    var id: Int?,
 )

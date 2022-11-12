@@ -77,3 +77,25 @@ END
 GO
 
 SELECT dbo.fn_get_random_name_by_category(1) AS random_name
+
+-- === Exposed table inserts ===
+INSERT INTO categories(name) VALUES
+('medieval'),
+('cyberpunk'),
+('steampunk')
+GO
+
+INSERT INTO name_types(type) VALUES
+('First Name'),
+('Middle Name'),
+('Last Name')
+GO
+
+INSERT INTO names(name, type_id, category_id) VALUES
+('Richard', 1, 1),
+('Elizabeth', 1, 1),
+('Mary', 1, 1),
+('Turin', 1, 1),
+('The Great', 3, 1),
+('Lion Heart', 3, 1)
+GO

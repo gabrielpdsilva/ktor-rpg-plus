@@ -2,10 +2,10 @@ package com.rpgplus.services
 
 import com.rpgplus.data.category.Categories
 import com.rpgplus.data.name.Names
+import com.rpgplus.data.nameType.NameTypes
 import io.ktor.server.application.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object Database {
@@ -22,26 +22,22 @@ object Database {
         password = System.getenv("db_password")?.toString() ?: ""
     }
 
-    private fun testsDB() {
+    private fun createTables() {
         transaction {
             SchemaUtils.create(Categories)
         }
         transaction {
+            SchemaUtils.create(NameTypes)
+        }
+        transaction {
             SchemaUtils.create(Names)
         }
-        val categories = transaction {
-            Categories.selectAll().map { Categories.toCategory(it) }
-        }
-        val names = transaction {
-            Names.selectAll().map { Names.toName(it) }
-        }
-        println("categories: $categories")
-        println("names: $names")
     }
 
     fun init() {
         try {
             Database.connect(url, driver, user, password)
+            createTables()
             println("Connected to database!")
         } catch (e: Exception) {
             println("Error connecting to database: $e")
